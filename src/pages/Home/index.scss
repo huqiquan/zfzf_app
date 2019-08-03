@@ -1,0 +1,20 @@
+.home {
+  .ul {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    li {
+      float: left;
+      width: 25%;
+      a {
+        display: block;
+        height: 50px;
+        text-align: center;
+        color: #333;
+        background-color: #fff;
+        padding-top: 10px;
+        border-top: 1px solid #ccc;
+      }
+    }
+  }
+}

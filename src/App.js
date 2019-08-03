@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Link, Route } from 'react-router-dom'
+import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom'
 import Home from './pages/Home'
 import City from './pages/City'
 import Map from './pages/Map'
@@ -19,9 +19,12 @@ class App extends React.Component {
               <Link to="/city">City组件</Link>
             </li>
           </ul> */}
-          <Route path="/home" component={Home} />
-          <Route path="/city" component={City} />
-          <Route path="/map" component={Map} />
+          <Switch>
+            <Redirect exact from="/" to="/home" />
+            <Route path="/home" component={Home} />
+            <Route path="/city" component={City} />
+            <Route path="/map" component={Map} />
+          </Switch>
         </div>
       </BrowserRouter>
     )

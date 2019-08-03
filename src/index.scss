@@ -3,4 +3,18 @@
   padding: 0;
   list-style: none;
   box-sizing: border-box;
+  touch-action: pan-y;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  background-color: #fff;
+  height: 3000px;
+  padding-bottom: 50px;
+}
+a {
+  color: #333;
 }
