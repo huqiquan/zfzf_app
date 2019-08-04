@@ -11,11 +11,46 @@ class Index extends React.Component {
   state = {
     area: 1,
     list: [],
-    news: []
+    news: [],
+    cityName: '北京'
   }
   componentDidMount() {
     this.getSteam()
     this.getNews()
+    // navigator.geolocation.getCurrentPosition(
+    //   position => {
+    //     console.log(position.coords)
+    //   },
+    //   error => {
+    //     console.log(error)
+    //   }
+    // )
+    // 使用百度地图的api利用ip获取当前城市名
+    var myCity = new window.BMap.LocalCity()
+    myCity.get(result => {
+      // console.log(result)
+      this.setState({
+        cityName: result.name
+      })
+      this.getCurrentCityInfo()
+    })
+  }
+  async getCurrentCityInfo() {
+    console.log(this.state.cityName)
+    const res = await axios.get(`http://localhost:8080/area/info`, {
+      params: {
+        name: this.state.cityName
+      }
+    })
+    // console.log(res.data)
+    const { status, body } = res.data
+    if (status === 200) {
+      console.log(body)
+      localStorage.setItem('currentCity', JSON.stringify(body))
+      this.setState({
+        cityName: body.label
+      })
+    }
   }
   async getSteam() {
     const res = await axios.get(
@@ -44,13 +79,17 @@ class Index extends React.Component {
     // console.log(this.props)
     this.props.history.push('/city')
   }
+  goMap = () => {
+    // console.log(this.props)
+    this.props.history.push('/map')
+  }
   render() {
     return (
       <div className="home_index">
         <div className="header clearfix">
           <div className="search clearfix">
             <div className="city" onClick={this.handleClick}>
-              <span>上海</span>
+              <span>{this.state.cityName}</span>
               <i className="iconfont icon-arrow" />
             </div>
             <div className="right">
@@ -59,7 +98,7 @@ class Index extends React.Component {
             </div>
           </div>
           <div className="map">
-            <i className="iconfont icon-map" />
+            <i className="iconfont icon-map" onClick={this.goMap} />
           </div>
         </div>
 

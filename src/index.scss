@@ -7,13 +7,14 @@
 }
 html,
 body,
-#root {
+#root,
+.App {
   height: 100%;
 }
 body {
   background-color: #fff;
-  height: 3000px;
-  padding-bottom: 50px;
+  // height: 3000px;
+  // padding-bottom: 80px;
 }
 a {
   color: #333;
