@@ -1,8 +1,58 @@
 .city {
+  height: 100%;
+  padding-top: 50px;
   .am-navbar {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 998;
     background-color: #f6f5f6;
     i {
       color: #333;
     }
+  }
+  .city-item {
+    padding: 0 10px;
+    .title {
+      height: 36px;
+      color: #999;
+      line-height: 36px;
+    }
+    .name {
+      height: 50px;
+      border-bottom: 1px solid #ccc;
+      line-height: 50px;
+    }
+  }
+  .rightNav {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    right: 5px;
+    z-index: 999;
+    height: 90%;
+    box-sizing: border-box;
+    padding-top: 20px;
+    text-align: center;
+    .rightNavItem {
+      span {
+        display: block;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+      }
+      flex: 1;
+      .activeNav {
+        display: block;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        background-color: orange;
+        border-radius: 10px;
+      }
+    }
+  }
+  .ReactVirtualized__Grid__innerScrollContainer::-webkit-scrollbar {
+    display: none;
   }
 }

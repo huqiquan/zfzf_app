@@ -36,20 +36,25 @@ class Index extends React.Component {
     })
   }
   async getCurrentCityInfo() {
-    console.log(this.state.cityName)
-    const res = await axios.get(`http://localhost:8080/area/info`, {
-      params: {
-        name: this.state.cityName
-      }
-    })
-    // console.log(res.data)
-    const { status, body } = res.data
-    if (status === 200) {
-      console.log(body)
-      localStorage.setItem('currentCity', JSON.stringify(body))
+    if (localStorage.getItem('currentCity')) {
       this.setState({
-        cityName: body.label
+        cityName: JSON.parse(localStorage.getItem('currentCity')).label
       })
+    } else {
+      const res = await axios.get(`http://localhost:8080/area/info`, {
+        params: {
+          name: this.state.cityName
+        }
+      })
+      // console.log(res.data)
+      const { status, body } = res.data
+      if (status === 200) {
+        console.log(body)
+        localStorage.setItem('currentCity', JSON.stringify(body))
+        this.setState({
+          cityName: body.label
+        })
+      }
     }
   }
   async getSteam() {
@@ -88,7 +93,7 @@ class Index extends React.Component {
       <div className="home_index">
         <div className="header clearfix">
           <div className="search clearfix">
-            <div className="city" onClick={this.handleClick}>
+            <div className="indexCity" onClick={this.handleClick}>
               <span>{this.state.cityName}</span>
               <i className="iconfont icon-arrow" />
             </div>

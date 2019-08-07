@@ -34,15 +34,17 @@
     padding: 0 0 10px;
     ul {
       overflow: hidden;
+      padding-right: 10px;
       li {
         float: left;
         width: 50%;
+        padding: 0 10px 0 0;
         // padding: 20px;
         // background-color: #f99;
         a {
           display: block;
           height: 85px;
-          width: 150px;
+          width: 100%;
           margin-left: 10px;
           background-color: #fff;
           text-align: left;
@@ -120,7 +122,7 @@
       background-color: #fff;
       border-radius: 5px;
       padding: 0 10px;
-      .city {
+      .indexCity {
         float: left;
         margin-top: 8px;
         font-size: 16px;

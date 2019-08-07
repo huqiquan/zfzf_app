@@ -28,25 +28,27 @@ class Lunbo extends React.Component {
       return null
     }
     return (
-      <Carousel autoplay={false} infinite>
-        {this.state.data.map(item => (
-          <a
-            key={item.id}
-            href="http://www.alipay.com"
-            style={{
-              display: 'inline-block',
-              width: '100%',
-              height: this.state.imgHeight
-            }}
-          >
-            <img
-              src={`http://localhost:8080${item.imgSrc}`}
-              alt=""
-              style={{ width: '100%', verticalAlign: 'top' }}
-            />
-          </a>
-        ))}
-      </Carousel>
+      <div style={{ height: this.state.imgHeight }}>
+        <Carousel autoplay={false} infinite>
+          {this.state.data.map(item => (
+            <a
+              key={item.id}
+              href="http://www.alipay.com"
+              style={{
+                display: 'inline-block',
+                width: '100%',
+                height: this.state.imgHeight
+              }}
+            >
+              <img
+                src={`http://localhost:8080${item.imgSrc}`}
+                alt=""
+                style={{ width: '100%', verticalAlign: 'top' }}
+              />
+            </a>
+          ))}
+        </Carousel>
+      </div>
     )
   }
 }

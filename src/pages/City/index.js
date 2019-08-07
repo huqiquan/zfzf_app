@@ -1,19 +1,28 @@
 import React from 'react'
-import { NavBar } from 'antd-mobile'
+import { NavBar, Toast } from 'antd-mobile'
 import './index.scss'
 import axios from 'axios'
-// import { List } from 'react-virtualized'
+import { List, AutoSizer } from 'react-virtualized'
 
 class City extends React.Component {
+  constructor(props) {
+    super(props)
+    // 创建ref对象
+    this.cityNavRef = React.createRef()
+  }
   state = {
     arr: [],
-    obj: {}
+    obj: {},
+    rowHeight: 200,
+    currentNav: 0,
+    navNum: 0
   }
   goBack = () => {
     this.props.history.go(-1)
   }
-  componentDidMount() {
-    this.getCityList()
+  async componentDidMount() {
+    await this.getCityList()
+    this.cityNavRef.current.measureAllRows()
   }
   async getCityList() {
     const res = await axios.get('http://localhost:8080/area/city?level=1')
@@ -41,28 +50,102 @@ class City extends React.Component {
         arr.unshift('hot')
         arr.unshift('#')
         obj['hot'] = hotRes.data.body
-        obj['#'] = localStorage.getItem('currentCity')
+        obj['#'] = [JSON.parse(localStorage.getItem('currentCity'))]
       }
       // console.log(obj, arr)
       this.setState({
         arr: arr,
         obj: obj
       })
-      console.log(this.state.obj, this.state.arr)
+      // console.log(this.state.obj, this.state.arr)
     }
   }
-  // rowRenderer({
-  //   key, // 唯一的key值
-  //   index, // 每一行的索引号
-  //   isScrolling, // 是否在滚动中
-  //   isVisible, // 是否可见
-  //   style // 样式对象
-  // }) {
-  //   return (
-  //     <div key={key} style={style}>
-  //       {this.state.arr[index]}
-  //     </div>
-  //   )
+  formatTitle(title) {
+    if (title === 'hot') {
+      return '热门城市'
+    } else if (title === '#') {
+      return '当前城市'
+    } else {
+      return title.toUpperCase()
+    }
+  }
+  rowRenderer({
+    key, // 唯一的key值
+    index, // 每一行的索引号
+    style // 样式对象
+  }) {
+    const letter = this.state.arr[index]
+    // console.log(letter)
+    const list = this.state.obj[letter]
+    // console.log(list)
+    return (
+      <div key={key} style={style} className="city-item">
+        <div className="title">{this.formatTitle(letter)}</div>
+        {/* {console.log(list)} */}
+        {list.map(item => (
+          <div
+            className="name"
+            key={item.value}
+            onClick={this.changeCity.bind(this, item)}
+          >
+            {item.label}
+          </div>
+        ))}
+      </div>
+    )
+  }
+  // 点击选择城市 将城市的信息储存到localStorage中
+  changeCity(city) {
+    const haveHouseArr = ['北京', '上海', '广州', '深圳']
+    if (haveHouseArr.includes(city.label)) {
+      localStorage.setItem('currentCity', JSON.stringify(city))
+      this.props.history.go(-1)
+    } else {
+      Toast.info('该城市暂无房源', 2, null, false)
+    }
+  }
+  setRowHeight({ index }) {
+    const letter = this.state.arr[index]
+    // console.log(letter)
+    const list = this.state.obj[letter]
+
+    return 36 + list.length * 50
+  }
+  // 渲染右边的导航
+  renderShortList() {
+    return (
+      <ul className="rightNav">
+        {this.state.arr.map((item, index) => (
+          <li className="rightNavItem" key={item}>
+            <span
+              className={index === this.state.currentNav ? 'activeNav' : ''}
+              onClick={this.clickNav.bind(this, index)}
+            >
+              {item === 'hot' ? '热' : item.toUpperCase()}
+            </span>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  onRowsRendered({ startIndex }) {
+    if (this.state.currentNav !== startIndex) {
+      this.setState({
+        currentNav: startIndex
+      })
+    }
+  }
+  // 点击对应的导航切换到相应的城市
+  clickNav(index) {
+    // console.log(index)
+    // console.log(this.state.currentNav)
+    this.setState({
+      currentNav: index
+    })
+    this.cityNavRef.current.scrollToRow(index)
+  }
+  // scrollToIndex({index}) {
+  //   index: this.state.currentNav
   // }
   render() {
     return (
@@ -74,13 +157,22 @@ class City extends React.Component {
         >
           城市选择
         </NavBar>
-        {/* <List
-          width={300}
-          height={300}
-          rowCount={this.state.arr.length}
-          rowHeight={20}
-          rowRenderer={this.rowRenderer}
-        /> */}
+        <AutoSizer>
+          {({ height, width }) => (
+            <List
+              ref={this.cityNavRef}
+              width={width}
+              height={height}
+              rowCount={this.state.arr.length}
+              rowHeight={this.setRowHeight.bind(this)}
+              rowRenderer={this.rowRenderer.bind(this)}
+              onRowsRendered={this.onRowsRendered.bind(this)}
+              // scrollToIndex={this.state.navNum}
+              scrollToAlignment="start"
+            />
+          )}
+        </AutoSizer>
+        {this.renderShortList()}
       </div>
     )
   }
